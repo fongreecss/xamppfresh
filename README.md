@@ -9,7 +9,5 @@ sudo chmod 777 -R xamppfresh && sudo ./xamppfresh/install
 
 Follow instructions on terminal
 
-###REMOVE XCF DIR (optional)###
+###REMOVE XAMPPFRESH DIR (optional)###
 sudo rm -r xamppfresh
-
-
