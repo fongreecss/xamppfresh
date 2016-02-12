@@ -1,0 +1,114 @@
+#!/bin/bash
+INST64="https://www.apachefriends.org/xampp-files/7.0.2/xampp-linux-x64-7.0.2-1-installer.run"
+INST32="https://www.apachefriends.org/xampp-files/7.0.2/xampp-linux-7.0.2-1-installer.run"
+CHOSEN=""
+
+function execute_when_downloaded() {
+    sudo chmod 755 /tmp/xamppinstall.run
+    clear
+    echo "Waiting for response"
+    sudo /tmp/xamppinstall.run --mode text
+}
+
+function fresh_install() {
+    clear
+    echo "Installing xampp 7.0.2-1"
+    echo "Choose your installation"
+    echo "32 bit (1)"
+    echo "64 bit (2)"
+    echo "Enter number (1 or 2):"
+    read INSTV
+    if [ $INSTV == "1" ]; then
+        CHOSEN=$INST32
+    elif [ $INSTV == "2" ]; then
+        CHOSEN=$INST64
+    else
+        echo "Wrong choice. Exit"
+        exit
+    fi
+    sudo wget $CHOSEN -O /tmp/xamppinstall.run
+    execute_when_downloaded
+}
+
+function remove_installation(){
+    clear
+    echo "Removing previous installation"
+    sudo /opt/lampp/lampp stop
+    sudo rm -r /opt/lampp/
+    if [ -f "/bin/lampp" ]; then
+        sudo rm /bin/lampp
+    fi
+    #removing autostart
+    sudo sed -i -e '/^\/opt\/lampp\/lampp start/d' /etc/rc.local
+    #method below works
+    #sudo sed -i.bak '/export PATH="\/opt\/lampp:$PATH/d' .bashrc
+    
+    echo "Done"
+}
+
+function restart_xampp() {
+    echo "Restarting xampp server"
+    sudo /opt/lampp/xampp restart
+}
+
+function add_to_path() {
+    #add symlink to bin
+    sudo ln -sf /opt/lampp/lampp /bin/
+    #all these lines bellow work. I just think its simplier this way
+    #echo "Adding xampp directory to path"   
+    #echo 'export PATH="/opt/lampp:$PATH"' >> ~/.bashrc
+    #sudo sh -c "sed -i 's/^PATH=\"/PATH=\"\/opt\/lampp:/g' /etc/environment"
+    echo "Done"
+}
+
+function run_xampp_on_startup() {
+    sudo sed -i -e '$i/opt/lampp/lampp start\n' /etc/rc.local
+}
+
+function set_security() {
+    clear
+    echo "Adding security"
+    sudo /opt/lampp/xampp security
+}
+
+function todo() {
+    echo "Configure Virtual Servers. Instructions are here: "
+}
+
+function install_xampp() {
+    sudo echo "XAMPP Install"
+    if [ -d "/opt/lampp" ]; then
+        #check if user wants to reinstall xampp
+        clear
+        echo "Do you want to reinstall xampp? n/y"
+        read REINST 
+        if [[ $REINST == n* ]]; then
+            clear
+            exit
+        fi
+        #remove lampp installation
+        remove_installation
+    fi
+
+    #check if there is xamppinstall already on computer
+    if [ -f "/tmp/xamppinstall.run" ]; then 
+        clear
+        echo "Do you want to use already existing xamppinstallation file? ( /tmp/xamppinstall.run )"
+        echo "[y] yes"
+        echo "[n] no - continueue with download"
+        read USEEXISTING
+        if [[ $USEEXISTING == y* ]]; then
+            execute_when_downloaded
+        else
+            fresh_install
+        fi
+    else
+        fresh_install
+    fi
+}
+
+install_xampp
+add_to_path
+restart_xampp
+set_security
+run_xampp_on_startup
