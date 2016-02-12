@@ -7,6 +7,8 @@ sudo git clone https://github.com/frasaleksander/xamppfresh.git xamppfresh
 ###NEXT RUN:###
 sudo chmod 777 -R xamppfresh && sudo ./xamppfresh/install
 
+Follow instructions on terminal
+
 ###REMOVE XCF DIR (optional)###
 sudo rm -r xamppfresh
 
