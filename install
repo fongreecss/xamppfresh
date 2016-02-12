@@ -2,7 +2,7 @@
 INST64="https://www.apachefriends.org/xampp-files/7.0.2/xampp-linux-x64-7.0.2-1-installer.run"
 INST32="https://www.apachefriends.org/xampp-files/7.0.2/xampp-linux-7.0.2-1-installer.run"
 CHOSEN=""
-
+#todo: export OSARCH=$(getconf LONG_BIT)
 function execute_when_downloaded() {
     sudo chmod 755 /tmp/xamppinstall.run
     clear
@@ -10,6 +10,7 @@ function execute_when_downloaded() {
     sudo /tmp/xamppinstall.run --mode text
 }
 
+#todo: remove choose your installation (hint getcong LONG_BIT)
 function fresh_install() {
     clear
     echo "Installing xampp 7.0.2-1"
