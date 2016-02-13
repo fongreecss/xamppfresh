@@ -31,7 +31,8 @@ sudo rm -r xamppfresh
 ```
 
 ###TODO###
-- [x] Run on system startup
+- [x] Xampp security embeded in installation process
+- [x] Run xampp on system startup
 - [x] Run xampp from terminal
-- [ ] Add Xampp Control Panel Launcher
-- [ ] Detect OS architecture
+- [ ] Add Xampp-Control-Panel Launcher
+- [ ] Detect OS architecture (one less step in installation process)
