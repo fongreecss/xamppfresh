@@ -12,7 +12,7 @@ sudo apt-get install git
 ####2.) gksu####
 sudo apt-get install gksu
 
-###NEXT###
+###Next###
 sudo chmod 777 -R xamppfresh && sudo ./xamppfresh/install
 
 Follow instructions on terminal
