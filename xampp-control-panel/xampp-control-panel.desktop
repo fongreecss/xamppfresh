@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=XAMPP Control Panel
+Exec=gksu /opt/lampp/manager-linux.run
+Icon=/usr/share/icons/Humanity/devices/24/network-wired.svg
+Encoding=UTF-8
+Terminal=false
+Comment=Start and Stop XAMPP
+Type=Application
