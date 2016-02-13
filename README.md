@@ -29,3 +29,9 @@ Follow instructions on terminal
 ```
 sudo rm -r xamppfresh
 ```
+
+###TODO###
+- [x] Run on system startup
+- [x] Run xampp from terminal
+- [ ] Add Xampp Control Panel Launcher
+- [ ] Detect OS architecture
