@@ -2,7 +2,7 @@
 Installs the latest version of xampp(lampp) on your debian based os [Ubuntu tested]
 ###Current version 7.0.2####
 
-####Prerequisites - don't have them... get them####
+####Prerequisites - if you don't already have them####
 ####1.) git ####
 ```
 sudo apt-get install git
