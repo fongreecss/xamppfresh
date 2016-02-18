@@ -18,21 +18,17 @@ sudo apt-get install -y git gksu
 
 ###Installation###
 ```
-sudo git clone https://github.com/frasaleksander/xamppfresh.git xamppfresh
+sudo git clone https://github.com/frasaleksander/xamppfresh.git /tmp/xamppfresh
 ```
 ```
-sudo chmod 777 -R xamppfresh && sudo ./xamppfresh/install
+cd /tmp/xamppfresh/
+sudo chmod 777 xamppfresh && sudo ./xamppfresh install
 ```
-Follow instructions on terminal
-
-###Remove xamppfresh installation directory (optional)###
-```
-sudo rm -r xamppfresh
-```
+Follow instructions on terminal. 
 
 ###TODO###
 - [x] Xampp security embeded in installation process
 - [x] Run xampp on system startup
-- [x] Run xampp from terminal
-- [ ] Add Xampp-Control-Panel Launcher
-- [ ] Detect OS architecture (one less step in installation process)
+- [x] Run xampp from terminal everywhere (lampp <action>)
+- [x] Add Xampp-Control-Panel Launcher
+- [x] Auto detect installation (32 or 64bit)
