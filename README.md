@@ -22,6 +22,8 @@ sudo git clone https://github.com/frasaleksander/xamppfresh.git /tmp/xamppfresh
 ```
 ```
 cd /tmp/xamppfresh/
+```
+```
 sudo chmod 777 xamppfresh && sudo ./xamppfresh install
 ```
 Follow instructions on terminal. 
