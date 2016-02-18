@@ -1,0 +1,207 @@
+#!/bin/bash
+INSTALLATION_ALREADY_EXIST=false
+INSTALLATION_FILE_ALREADY_EXIST=false
+CURRENT_XAMPP_VERSION="7.0.2"
+
+INST64="https://www.apachefriends.org/xampp-files/7.0.2/xampp-linux-x64-7.0.2-1-installer.run"
+INST64_MD5SUM="5682b4370db5bf3643c675df6b7f2d92"
+
+INST32="https://www.apachefriends.org/xampp-files/7.0.2/xampp-linux-7.0.2-1-installer.run"
+INST32_MD5SUM="068cc5e4d69fbbc53dfad471c94465f5"
+
+MANAGER64="xampp-control-panel-x64.desktop"
+MANAGER32="xampp-control-panel.desktop"
+
+OSBIT=""
+CHOSENINST=""
+
+TMPDIR=/tmp/
+TMPINSTFILE=${TMPDIR}xamppinstall.run
+CURRENTDIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/
+XAMPPDIR=/opt/lampp/
+#Xampp Control Panel = XCP
+#Directory that holds xampp-control-panel.desktop
+XCPDIR=~/.local/share/applications/
+
+
+
+function add_run_xampp_on_startup() {
+    sudo sed -i -e '$i/opt/lampp/lampp start\n' /etc/rc.local
+}
+
+function add_to_path() {
+    #add symlink to bin
+    sudo ln -sf ${XAMPPDIR}lampp /bin/
+    #all these lines bellow work. I just think its simplier this way
+    #echo "Adding xampp directory to path"   
+    #echo 'export PATH="/opt/lampp:$PATH"' >> ~/.bashrc
+    #sudo sh -c "sed -i 's/^PATH=\"/PATH=\"\/opt\/lampp:/g' /etc/environment"
+    echo "Done"
+}
+
+function add_xcp() {
+    if [ -f "${XAMPPDIR}manager-linux-x64.run" ]; then
+        cp -f ${CURRENTDIR}xampp-control-panel/xampp-control-panel-x64.desktop $XCPDIR
+    elif [ -f "${XAMPPDIR}manager-linux.run" ]; then
+        cp -f ${CURRENTDIR}xampp-control-panel/xampp-control-panel.desktop $XCPDIR
+    fi
+}
+
+function remove_xpc() {
+    sudo rm -f ${XCPDIR}xampp-control-panel*
+}
+
+function auto_detect_installation() {
+    if [ $(getconf LONG_BIT) == "64" ]; then
+        OSBIT="64"
+        CHOSENINST=$INST64
+
+    else
+        OSBIT="32"
+        CHOSENINST=$INST32
+    fi
+}
+
+function execute_install() {
+    sudo chmod 755 $TMPINSTFILE
+    clear
+    echo "Waiting for response"
+    sudo $TMPINSTFILE --mode text
+}
+
+function get_installed_xampp_version() {
+    if [ -f "${XAMPPDIR}lib/VERSION" ]; then
+        echo $(cat ${XAMPPDIR}lib/VERSION)
+    else 
+        echo ""
+    fi
+}
+function remove_from_path() {
+    if [ -f "/bin/lampp" ]; then
+        sudo rm -f /bin/lampp
+    fi
+}
+function remove_run_xampp_on_startup() {
+    sudo sed -i -e '/^\/opt\/lampp\/lampp start/d' /etc/rc.local
+}
+
+function set_xampp_security() {
+    clear
+    echo "Adding security"
+    sudo ${XAMPPDIR}xampp security
+}
+
+function download_xampp() {
+    sudo wget $CHOSENINST -O $TMPINSTFILE
+}
+
+function xampp_exists() {
+    if [ -f "${XAMPPDIR}xampp" ] &&  [ -f "${XAMPPDIR}lib/VERSION" ] && [ -f "${XAMPPDIR}uninstall" ]; then
+        echo "true"
+    else 
+        echo "false"
+    fi
+}
+
+function install_xampp() {
+    clear
+    echo "Installing XAMPP ${CURRENT_XAMPP_VERSION} - ${OSBIT}bit"
+    if [ "$(xampp_md5sum)" == "false" ]; then
+        download_xampp
+    fi
+    execute_install
+    add_to_path
+    restart_xampp
+    set_xampp_security
+    add_run_xampp_on_startup
+    add_xcp
+    sudo chmod 777 -R ${XAMPPDIR}htdocs/
+}
+
+function xampp_md5sum() {
+    if [ -f "$TMPINSTFILE" ]; then
+        TMP_MD5SUM=$(md5sum $TMPINSTFILE | awk '{print $1}')
+        if [ "$OSBIT" == "64" ] && [ "$TMP_MD5SUM" == "$INST64_MD5SUM" ]; then
+            echo "true"
+        elif [ "$OSBIT" == "32" ] && [ "$TMP_MD5SUM" == "$INST32_MD5SUM" ]; then
+            echo "true"
+        else
+            echo "false"
+        fi
+    else
+        echo "false"
+    fi
+}
+
+function remove_xampp() {
+    if [ $(xampp_exists) == "true" ]; then
+        clear
+        echo "Removing xampp installation"
+        stop_xampp
+        uninstall_xampp
+        sudo rm -fr ${XAMPPDIR}
+        remove_from_path
+        #removing autostart
+        remove_run_xampp_on_startup
+        remove_xpc
+        #method below works
+        #sudo sed -i.bak '/export PATH="\/opt\/lampp:$PATH/d' .bashrc
+        echo "Done removing xampp"
+    else 
+        echo "Xampp does not exist"
+    fi
+}
+
+function restart_xampp() {
+    echo "Restarting xampp server"
+    sudo ${XAMPPDIR}xampp restart
+}
+
+function stop_xampp() {
+    echo "Stopping xampp server"
+    sudo ${XAMPPDIR}lampp stop
+}
+
+function uninstall_xampp() {
+    if [ -f "${XAMPPDIR}uninstall" ]; then
+        sudo chmod 755 ${XAMPPDIR}uninstall*
+        sudo ${XAMPPDIR}uninstall --mode text
+    fi
+}
+
+function help() {
+        echo "Usage: xamppfresh <action>"
+        echo -e "\tinstall\t\tInstalls xampp on your computer"
+        echo -e "\tremove\t\tremoves xampp completely from your computer. *"
+        echo "*  Be sure to backup your files and databases, before you execute action!!!"
+}
+
+
+auto_detect_installation
+if [ "$1" == "install" ]; then
+    clear
+    if [ "$(xampp_exists)" == "true" ]; then
+        echo -e "xampp $(get_installed_xampp_version) already exists on your computer!\n"
+        help
+        exit
+    else 
+        install_xampp
+    fi
+
+elif [ "$1" == "remove" ]; then
+    clear
+    echo "Are you sure you want to remove xampp from your computer?"
+    echo "[y] yes"
+    echo "[n] no"
+    read DODELETE
+    if [[ $DODELETE == y* ]]; then
+        remove_xampp
+    else
+        exit
+    fi
+
+elif [ "$1" == "uninstall" ]; then
+    uninstall_xampp
+else 
+    help
+fi
