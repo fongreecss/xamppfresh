@@ -15,9 +15,9 @@ MANAGER32="xampp-control-panel.desktop"
 OSBIT=""
 CHOSENINST=""
 
-TMPDIR=/tmp/
-TMPINSTFILE=${TMPDIR}xamppinstall.run
 CURRENTDIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/
+TMPDIR=${CURRENTDIR}tmp/
+TMPINSTFILE=${TMPDIR}xamppinstall.run
 XAMPPDIR=/opt/lampp/
 #Xampp Control Panel = XCP
 #Directory that holds xampp-control-panel.desktop
