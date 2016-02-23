@@ -18,16 +18,13 @@ sudo apt-get install -y git gksu
 
 ###Installation###
 ```
-sudo git clone https://github.com/frasaleksander/xamppfresh.git /tmp/xamppfresh
+sudo git clone https://github.com/frasaleksander/xamppfresh.git ~/xamppfresh
 ```
 ```
-cd /tmp/xamppfresh/
+sudo chmod 775 -R ~/xamppfresh
 ```
 ```
-sudo chmod 777 xamppfresh
-```
-```
-sudo ./xamppfresh install
+sudo ~/xamppfresh install
 ```
 Follow instructions on terminal. 
 
