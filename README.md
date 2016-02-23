@@ -24,7 +24,7 @@ sudo git clone https://github.com/frasaleksander/xamppfresh.git ~/xamppfresh
 sudo chmod 775 -R ~/xamppfresh
 ```
 ```
-sudo ~/xamppfresh install
+sudo ~/xamppfresh/xamppfresh install
 ```
 Follow instructions on terminal. 
 
