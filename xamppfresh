@@ -115,7 +115,7 @@ function install_xampp() {
     set_xampp_security
     add_run_xampp_on_startup
     add_xcp
-    sudo chmod 777 -R ${XAMPPDIR}htdocs/
+    sudo chown $(whoami) -R ${XAMPPDIR}htdocs/
 }
 
 function xampp_md5sum() {
