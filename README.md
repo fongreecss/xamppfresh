@@ -21,7 +21,7 @@ sudo apt-get install -y git gksu
 git clone https://github.com/frasaleksander/xamppfresh.git ~/xamppfresh
 ```
 ```
-sudo chgrp $(whoami) -R ~/xamppfresh
+chgrp $(whoami) -R ~/xamppfresh
 ```
 ```
 ~/xamppfresh/xamppfresh install
