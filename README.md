@@ -1,6 +1,6 @@
 # Xamppfresh #
 Installs the latest version of xampp(lampp) on your debian based os [Ubuntu tested]
-###Current version 7.0.2####
+###Current version 7.0.4####
 
 ####Prerequisites - if you don't already have them####
 ####1.) git ####
