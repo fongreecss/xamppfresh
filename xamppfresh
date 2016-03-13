@@ -1,7 +1,7 @@
 #!/bin/bash
 INSTALLATION_ALREADY_EXIST=false
 INSTALLATION_FILE_ALREADY_EXIST=false
-CURRENT_XAMPP_VERSION="7.0.2"
+CURRENT_XAMPP_VERSION="7.0.4"
 
 INST64="https://www.apachefriends.org/xampp-files/7.0.4/xampp-linux-x64-7.0.4-0-installer.run"
 INST64_MD5SUM="90b7ead5b2725a41851eeb87866256d3"
