@@ -3,11 +3,11 @@ INSTALLATION_ALREADY_EXIST=false
 INSTALLATION_FILE_ALREADY_EXIST=false
 CURRENT_XAMPP_VERSION="7.0.2"
 
-INST64="https://www.apachefriends.org/xampp-files/7.0.2/xampp-linux-x64-7.0.2-1-installer.run"
-INST64_MD5SUM="5682b4370db5bf3643c675df6b7f2d92"
+INST64="https://www.apachefriends.org/xampp-files/7.0.4/xampp-linux-x64-7.0.4-0-installer.run"
+INST64_MD5SUM="90b7ead5b2725a41851eeb87866256d3"
 
-INST32="https://www.apachefriends.org/xampp-files/7.0.2/xampp-linux-7.0.2-1-installer.run"
-INST32_MD5SUM="068cc5e4d69fbbc53dfad471c94465f5"
+INST32="https://www.apachefriends.org/xampp-files/7.0.4/xampp-linux-7.0.4-0-installer.run"
+INST32_MD5SUM="0ce7501acf0033e071c1e0e159aa5bc4"
 
 MANAGER64="xampp-control-panel-x64.desktop"
 MANAGER32="xampp-control-panel.desktop"
