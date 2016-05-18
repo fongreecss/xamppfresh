@@ -1,28 +1,20 @@
 #!/bin/bash
-INSTALLATION_ALREADY_EXIST=false
-INSTALLATION_FILE_ALREADY_EXIST=false
-CURRENT_XAMPP_VERSION="7.0.4"
 
-INST64="https://www.apachefriends.org/xampp-files/7.0.4/xampp-linux-x64-7.0.4-0-installer.run"
-INST64_MD5SUM="90b7ead5b2725a41851eeb87866256d3"
+APPDIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/
+TMPDIR=${APPDIR}tmp/
+XAMPPDIR=/opt/lampp/
+XCPDIR=~/.local/share/applications/ #Xampp Control Panel = XCP (Directory that holds xampp-control-panel.desktop)
 
-INST32="https://www.apachefriends.org/xampp-files/7.0.4/xampp-linux-7.0.4-0-installer.run"
-INST32_MD5SUM="0ce7501acf0033e071c1e0e159aa5bc4"
-
-MANAGER64="xampp-control-panel-x64.desktop"
-MANAGER32="xampp-control-panel.desktop"
+XAMPP_LATEST="7.0.6"
+XAMPP_VERSION=$XAMPP_LATEST
 
 OSBIT=""
 CHOSENINST=""
+TMPINSTFILE=""
 
-CURRENTDIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/
-TMPDIR=${CURRENTDIR}tmp/
-TMPINSTFILE=${TMPDIR}xamppinstall.run
-XAMPPDIR=/opt/lampp/
-#Xampp Control Panel = XCP
-#Directory that holds xampp-control-panel.desktop
-XCPDIR=~/.local/share/applications/
-
+#DO I REALLY NEED THIS :)
+MANAGER64="xampp-control-panel-x64.desktop"
+MANAGER32="xampp-control-panel.desktop"
 
 
 function add_run_xampp_on_startup() {
@@ -41,9 +33,9 @@ function add_to_path() {
 
 function add_xcp() {
     if [ -f "${XAMPPDIR}manager-linux-x64.run" ]; then
-        cp -f ${CURRENTDIR}xampp-control-panel/xampp-control-panel-x64.desktop $XCPDIR
+        cp -f ${APPDIR}xampp-control-panel/xampp-control-panel-x64.desktop $XCPDIR
     elif [ -f "${XAMPPDIR}manager-linux.run" ]; then
-        cp -f ${CURRENTDIR}xampp-control-panel/xampp-control-panel.desktop $XCPDIR
+        cp -f ${APPDIR}xampp-control-panel/xampp-control-panel.desktop $XCPDIR
     fi
 }
 
@@ -51,19 +43,24 @@ function remove_xpc() {
     sudo rm -f ${XCPDIR}xampp-control-panel*
 }
 
-function auto_detect_installation() {
+function get_osbit() {
     if [ $(getconf LONG_BIT) == "64" ]; then
-        OSBIT="64"
-        CHOSENINST=$INST64
-
+        echo "64"
     else
-        OSBIT="32"
-        CHOSENINST=$INST32
+        echo "32"
     fi
 }
 
+function get_installer_url() {
+    local prefix=""
+    if [ $OSBIT == "64" ]; then
+        prefix="-x64"
+    fi
+    echo "https://www.apachefriends.org/xampp-files/${XAMPP_VERSION}/xampp-linux${prefix}-${XAMPP_VERSION}-0-installer.run"
+}
+
 function execute_install() {
-    sudo chmod 755 $TMPINSTFILE
+    sudo chmod 775 $TMPINSTFILE
     clear
     echo "Waiting for response"
     sudo $TMPINSTFILE --mode text
@@ -92,7 +89,7 @@ function set_xampp_security() {
 }
 
 function download_xampp() {
-    sudo wget $CHOSENINST -O $TMPINSTFILE
+    sudo wget -nc $CHOSENINST -O $TMPINSTFILE
 }
 
 function xampp_exists() {
@@ -103,56 +100,22 @@ function xampp_exists() {
     fi
 }
 
-function install_xampp() {
-    clear
-    echo "Installing XAMPP ${CURRENT_XAMPP_VERSION} - ${OSBIT}bit"
-    if [ "$(xampp_md5sum)" == "false" ]; then
-        download_xampp
-    fi
-    execute_install
-    add_to_path
-    restart_xampp
-    set_xampp_security
-    add_run_xampp_on_startup
-    add_xcp
-    sudo chown $(whoami) -R ${XAMPPDIR}htdocs/
-    sudo chgrp $(whoami) -R ${XAMPPDIR}htdocs/
-    sudo chmod 775 -R ${XAMPPDIR}htdocs/
-}
-
-function xampp_md5sum() {
-    if [ -f "$TMPINSTFILE" ]; then
-        TMP_MD5SUM=$(md5sum $TMPINSTFILE | awk '{print $1}')
-        if [ "$OSBIT" == "64" ] && [ "$TMP_MD5SUM" == "$INST64_MD5SUM" ]; then
-            echo "true"
-        elif [ "$OSBIT" == "32" ] && [ "$TMP_MD5SUM" == "$INST32_MD5SUM" ]; then
-            echo "true"
-        else
-            echo "false"
-        fi
-    else
-        echo "false"
-    fi
-}
-
-function remove_xampp() {
-    if [ $(xampp_exists) == "true" ]; then
-        clear
-        echo "Removing xampp installation"
-        stop_xampp
-        uninstall_xampp
-        sudo rm -fr ${XAMPPDIR}
-        remove_from_path
-        #removing autostart
-        remove_run_xampp_on_startup
-        remove_xpc
-        #method below works
-        #sudo sed -i.bak '/export PATH="\/opt\/lampp:$PATH/d' .bashrc
-        echo "Done removing xampp"
-    else 
-        echo "Xampp does not exist"
-    fi
-}
+# INST64_MD5SUM="90b7ead5b2725a41851eeb87866256d3"
+# INST32_MD5SUM="0ce7501acf0033e071c1e0e159aa5bc4"
+# function xampp_md5sum() {
+#     if [ -f "$TMPINSTFILE" ]; then
+#         TMP_MD5SUM=$(md5sum $TMPINSTFILE | awk '{print $1}')
+#         if [ "$OSBIT" == "64" ] && [ "$TMP_MD5SUM" == "$INST64_MD5SUM" ]; then
+#             echo "true"
+#         elif [ "$OSBIT" == "32" ] && [ "$TMP_MD5SUM" == "$INST32_MD5SUM" ]; then
+#             echo "true"
+#         else
+#             echo "false"
+#         fi
+#     else
+#         echo "false"
+#     fi
+# }
 
 function restart_xampp() {
     echo "Restarting xampp server"
@@ -164,46 +127,71 @@ function stop_xampp() {
     sudo ${XAMPPDIR}lampp stop
 }
 
-function uninstall_xampp() {
-    if [ -f "${XAMPPDIR}uninstall" ]; then
-        sudo chmod 755 ${XAMPPDIR}uninstall*
-        sudo ${XAMPPDIR}uninstall --mode text
+function install_xampp() {
+    if [ $(xampp_exists) == "true" ]; then
+        echo "XAMPP $(get_installed_xampp_version) already exists on your computer!"
+        help
+        exit
     fi
+    echo "Installing XAMPP ${XAMPP_VERSION} - ${OSBIT}bit"
+    download_xampp
+    execute_install
+    if [ $(xampp_exists) != "true" ]; then
+        echo -e "If you see this message then xampp was not installed as it should be.\nTry to erase the installer file (${TMPINSTFILE})\n and try installation again!"
+        return 0
+    fi
+    add_to_path
+    restart_xampp
+    set_xampp_security
+    add_run_xampp_on_startup
+    add_xcp
+    sudo chown $(whoami) -R ${XAMPPDIR}htdocs/
+    sudo chgrp $(whoami) -R ${XAMPPDIR}htdocs/
+    sudo chmod 775 -R ${XAMPPDIR}htdocs/
+}
+
+function uninstall_xampp() {
+    if [ $(xampp_exists) != "true" ]; then
+        echo "Xampp does not exist!"
+        return 0
+    fi
+
+    clear
+    echo "Removing xampp installation"
+    stop_xampp
+    sudo chmod 775 ${XAMPPDIR}uninstall*
+    sudo ${XAMPPDIR}uninstall --mode text
+    remove_from_path
+    remove_run_xampp_on_startup
+    remove_xpc
+    #method below works
+    #sudo sed -i.bak '/export PATH="\/opt\/lampp:$PATH/d' .bashrc
+    echo "Done uninstaling xampp!"
 }
 
 function help() {
-        echo "Usage: xamppfresh <action>"
-        echo -e "\tinstall\t\tInstalls xampp on your computer"
-        echo -e "\tremove\t\tremoves xampp completely from your computer. *"
-        echo "*  Be sure to backup your files and databases, before you execute action!!!"
+    echo "Usage: xamppfresh <action>"
+    echo "install        Installs xampp on your computer"
+    echo "uninstall      Uninstall xampp completely from your computer. *"
+    echo "*  Be sure to backup your files and databases, before you execute action!!!"
 }
 
+#end of definitions 
 
-auto_detect_installation
-if [ "$1" == "install" ]; then
-    clear
-    if [ "$(xampp_exists)" == "true" ]; then
-        echo -e "xampp $(get_installed_xampp_version) already exists on your computer!\n"
-        help
-        exit
-    else 
-        install_xampp
-    fi
 
-elif [ "$1" == "remove" ]; then
-    clear
-    echo "Are you sure you want to remove xampp from your computer?"
-    echo "[y] yes"
-    echo "[n] no"
-    read DODELETE
-    if [[ $DODELETE == y* ]]; then
-        remove_xampp
-    else
-        exit
-    fi
 
-elif [ "$1" == "uninstall" ]; then
+OSBIT=$(get_osbit)
+if [ $# == 2 ] && [ $1 == "install" ]; then 
+    XAMPP_VERSION=$2
+fi
+TMPINSTFILE=${TMPDIR}installer-${OSBIT}-${XAMPP_VERSION}.run
+CHOSENINST=$(get_installer_url)
+
+
+if [ $1 == "install" ]; then
+    install_xampp
+elif [ $1 == "uninstall" ]; then
     uninstall_xampp
-else 
+else
     help
 fi
