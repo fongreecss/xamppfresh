@@ -4,26 +4,26 @@ Installs the latest version of xampp(lampp) on your debian based os [Ubuntu test
 
 ####Prerequisites - if you don't already have them####
 ####1.) git ####
-```
+```sh
 sudo apt-get install git
 ```
 ####2.) gksu####
-```
+```sh
 sudo apt-get install gksu
 ```
 #####Or all in one line #####
-```
+```sh
 sudo apt-get install -y git gksu
 ```
 
 ###Installation###
-```
+```sh
 git clone https://github.com/frasaleksander/xamppfresh.git ~/xamppfresh
 ```
-```
+```sh
 chgrp $(whoami) -R ~/xamppfresh
 ```
-```
+```sh
 ~/xamppfresh/xamppfresh install
 ```
 Follow instructions on terminal. 
