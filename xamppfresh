@@ -12,11 +12,6 @@ OSBIT=""
 CHOSENINST=""
 TMPINSTFILE=""
 
-#DO I REALLY NEED THIS :)
-MANAGER64="xampp-control-panel-x64.desktop"
-MANAGER32="xampp-control-panel.desktop"
-
-
 function add_run_xampp_on_startup() {
     sudo sed -i -e '$i/opt/lampp/lampp start\n' /etc/rc.local
 }
