@@ -133,7 +133,13 @@ function install_xampp() {
     download_xampp
     execute_install
     if [ $(xampp_exists) != "true" ]; then
-        echo -e "If you see this message then xampp was not installed as it should be.\nTry to erase the installer file (${TMPINSTFILE})\n and try installation again!"
+        echo -e "If you see this message then xampp was not installed as it should be."
+        echo "Possible reasons:"
+        echo "1.) Installer file is corrupted did not finish downloading"
+        echo "2.) Chosen installation version does not exist"
+        echo "3.) Other"
+        echo "Try to install xampp again!"
+        rm -f ${TMPINSTFILE}
         return 0
     fi
     sudo chown $(whoami) -R ${HTDOCSDIR}
@@ -184,11 +190,12 @@ fi
 TMPINSTFILE=${TMPDIR}installer-${OSBIT}-${XAMPP_VERSION}.run
 CHOSENINST=$(get_installer_url)
 
-
-if [ $1 == "install" ]; then
-    install_xampp
-elif [ $1 == "uninstall" ]; then
-    uninstall_xampp
+if [ $# -ge 1 ]; then
+    if [ $1 == "install" ]; then
+        install_xampp
+    elif [ $1 == "uninstall" ]; then
+        uninstall_xampp
+    fi
 else
     help
 fi
