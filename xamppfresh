@@ -4,6 +4,7 @@ APPDIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/
 TMPDIR=${APPDIR}tmp/
 XAMPPDIR=/opt/lampp/
 XCPDIR=~/.local/share/applications/ #Xampp Control Panel = XCP (Directory that holds xampp-control-panel.desktop)
+HTDOCSDIR=${XAMPPDIR}htdocs/
 
 XAMPP_LATEST="7.0.6"
 XAMPP_VERSION=$XAMPP_LATEST
@@ -55,8 +56,9 @@ function get_installer_url() {
 }
 
 function execute_install() {
-    sudo chmod 775 $TMPINSTFILE
+    sudo chmod 774 $TMPINSTFILE
     clear
+    echo "Installing XAMPP ${XAMPP_VERSION} - ${OSBIT}bit"
     echo "Waiting for response"
     sudo $TMPINSTFILE --mode text
 }
@@ -128,21 +130,21 @@ function install_xampp() {
         help
         exit
     fi
-    echo "Installing XAMPP ${XAMPP_VERSION} - ${OSBIT}bit"
     download_xampp
     execute_install
     if [ $(xampp_exists) != "true" ]; then
         echo -e "If you see this message then xampp was not installed as it should be.\nTry to erase the installer file (${TMPINSTFILE})\n and try installation again!"
         return 0
     fi
+    sudo chown $(whoami) -R ${HTDOCSDIR}
     add_to_path
     restart_xampp
     set_xampp_security
     add_run_xampp_on_startup
     add_xcp
-    sudo chown $(whoami) -R ${XAMPPDIR}htdocs/
-    sudo chgrp $(whoami) -R ${XAMPPDIR}htdocs/
-    sudo chmod 775 -R ${XAMPPDIR}htdocs/
+    # sudo chown $(whoami) -R ${HTDOCSDIR}
+    # sudo chmod 750 -R ${XAMPPDIR}
+    # sudo chmod 755 -R ${HTDOCSDIR}
 }
 
 function uninstall_xampp() {
@@ -154,7 +156,7 @@ function uninstall_xampp() {
     clear
     echo "Removing xampp installation"
     stop_xampp
-    sudo chmod 775 ${XAMPPDIR}uninstall*
+    sudo chmod 774 ${XAMPPDIR}uninstall*
     sudo ${XAMPPDIR}uninstall --mode text
     remove_from_path
     remove_run_xampp_on_startup
