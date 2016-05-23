@@ -1,5 +1,5 @@
 # Xamppfresh #
-Installs the latest version of xampp(lampp) on your debian based os [Ubuntu tested]
+Install the Xampp(Lampp) on Ubuntu (based OS)
 ###Latest version 7.0.6####
 
 ####Prerequisites - if you don't already have them####
