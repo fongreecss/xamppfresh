@@ -18,7 +18,7 @@ sudo apt-get install -y git gksu
 
 ###Install###
 ```sh
-git clone https://github.com/frasaleksander/xamppfresh.git ~/xamppfresh
+git clone https://github.com/fongreecss/xamppfresh.git ~/xamppfresh
 ```
 
 Install the latest version
